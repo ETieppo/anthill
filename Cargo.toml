@@ -6,6 +6,12 @@ edition = "2024"
 [dependencies]
 bevy = "0.20.1"
 
+[profile.dev]
+opt-level = 1
+
+[profile.build]
+opt-level = 3
+
 [profile.samply]
 inherits = "release"
 debug = true

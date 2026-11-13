@@ -56,10 +56,12 @@ impl AntsPlugin {
 		taxons: Res<TaxonomyBuilder>,
 	) {
 		for ant in ants {
+			let ant_species = taxons.get_by_id(*ant.2);
 			let taxon = taxons.ancestors(*ant.2);
-			for ac in taxon {
-				println!("{}", ac.0);
-			}
+            println!("{}",ant_species.name);
+			// for ac in taxon {
+			// 	println!("{}", ac.0);
+			// }
 		}
 	}
 

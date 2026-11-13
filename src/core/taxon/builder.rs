@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use bevy::input::keyboard::Key::New;
 use bevy::prelude::*;
 
 use crate::ants::AntsPlugin;
@@ -29,7 +30,7 @@ impl TaxonomyBuilder {
 	) -> TaxonId {
 		self.push(
 			TaxonProps {
-				name,
+				name: String::from(name),
 				rank,
 				parent: None,
 			},
@@ -48,7 +49,7 @@ impl TaxonomyBuilder {
 
 		let id = self.push(
 			TaxonProps {
-				name,
+				name:String::from(name),
 				rank,
 				parent: Some(parent),
 			},
@@ -83,6 +84,18 @@ impl TaxonomyBuilder {
 
 	pub fn push(&mut self, taxon: TaxonProps, resolved: TaxonInheritanceProps) -> TaxonId {
 		let id = TaxonId(self.taxa.len() as u32);
+		let new_name: String = if taxon.rank == TaxonRankEnum::Species
+			&& let Some(parent_id) = taxon.parent
+		{
+			Self::mount_name(self.get_by_id(parent_id).name.clone(), taxon.name)
+		}
+		else {
+			taxon.name.into()
+		};
+		let taxon = TaxonProps {
+			name: new_name,
+			..taxon
+		};
 		self.taxa.push(taxon);
 		self.resolved.push(resolved);
 		id
@@ -106,5 +119,13 @@ impl TaxonomyBuilder {
 
 	pub fn descends_from(&self, id: TaxonId, ancestor: TaxonId) -> bool {
 		id == ancestor || self.ancestors(id).any(|current| current == ancestor)
+	}
+
+	fn mount_name(genus: String, species: String) -> String {
+		let short: char = genus
+			.chars()
+			.next()
+			.expect("No genus has been defined for species {species}");
+		format!("{}. {}", short, species)
 	}
 }

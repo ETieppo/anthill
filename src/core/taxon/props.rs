@@ -18,7 +18,7 @@ pub enum TaxonRankEnum {
 
 #[derive(Debug)]
 pub struct TaxonProps {
-	pub name:   &'static str,
+	pub name:   String,
 	pub rank:   TaxonRankEnum,
 	pub parent: Option<TaxonId>,
 }

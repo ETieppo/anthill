@@ -1,9 +1,11 @@
+mod prototypes;
 use bevy::prelude::*;
 
-use crate::{
-	colony::MemberOf,
-	core::{poison::ToxinId, taxon::TaxonProps},
-};
+use crate::ants::prototypes::SOLENOPSIS_INVICTA_NAME;
+use crate::colony::MemberOf;
+use crate::core::taxon::PrototypesTrait;
+use crate::core::taxon::TaxonId;
+use crate::core::taxon::TaxonomyBuilder;
 
 #[derive(Component)]
 pub struct Ant;
@@ -38,30 +40,31 @@ impl Plugin for AntsPlugin {
 	fn build(&self, app: &mut App) {
 		app
 			.add_systems(Startup, Self::init)
-			.add_systems(Update, Self::update)
-			.insert_resource(Self::fire_ant_prototypes());
+			.add_systems(Update, Self::update);
 	}
 }
 
 impl AntsPlugin {
-	// TODO: fix _cmd
-	pub fn init(mut _cmd: Commands) {}
+	pub fn init(mut cmd: Commands, res: Res<TaxonomyBuilder>) {
+		let proto_id = res.get_taxon_id_by_name(SOLENOPSIS_INVICTA_NAME);
+		cmd.spawn((Ant, QueenAnt, proto_id));
+	}
 
-	// TODO: fix _cmd
-	pub fn update(mut _cmd: Commands) {}
+	pub fn update(
+		mut cmd: Commands,
+		ants: Query<(Entity, &Ant, &TaxonId)>,
+		taxons: Res<TaxonomyBuilder>,
+	) {
+		for ant in ants {
+			let taxon = taxons.ancestors(*ant.2);
+			for ac in taxon {
+				println!("{}", ac.0);
+			}
+		}
+	}
 
 	pub fn spawn_init_ants(mut cmd: Commands, colony: Entity) {
 		cmd.spawn((Ant, MemberOf(colony), QueenAnt));
 		cmd.spawn((Ant, MemberOf(colony), NaniticAnt));
-	}
-
-	pub fn fire_ant_prototypes() -> Prototypes {
-		Prototypes {
-			taxa: vec![TaxonProps {
-				toxin: ToxinId(0),
-				name: "Solenopsis invicta",
-				base_health: 100,
-			}],
-		}
 	}
 }

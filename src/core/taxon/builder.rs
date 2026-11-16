@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::Logger;
 
 use bevy::input::keyboard::Key::New;
 use bevy::prelude::*;
@@ -102,10 +103,10 @@ impl TaxonomyBuilder {
 	}
 
 	/// only for init statements
-	pub fn get_taxon_id_by_name(&self, name: &'static str) -> TaxonId {
+	pub fn get_taxon_id_by_name(&self, name: &'static str) -> Result<TaxonId> {
 		match self.index.get(name) {
 			Some(id) => Clone::clone(id),
-			_ => panic!("[ERR]: no TaxonId with name {}", name),
+			_ => Logger::panic(format!("No TaxonId with name {}", name)),
 		}
 	}
 

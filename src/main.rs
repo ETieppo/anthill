@@ -6,6 +6,7 @@ mod fungi;
 mod riboviria;
 
 use bevy::prelude::*;
+pub use core::Logger;
 
 fn main() {
 	App::new()

@@ -55,10 +55,11 @@ impl AntsPlugin {
 		ants: Query<(Entity, &Ant, &TaxonId)>,
 		taxons: Res<TaxonomyBuilder>,
 	) {
-		for ant in ants {
-			let ant_species = taxons.get_by_id(*ant.2);
-			let taxon = taxons.ancestors(*ant.2);
-            println!("{}",ant_species.name);
+		for (_, _, taxon_id) in ants {
+			let ant_species = taxons.get_by_id(*taxon_id);
+			let taxon = taxons.ancestors(*taxon_id);
+            taxon.;
+			println!("{}", ant_species.name);
 			// for ac in taxon {
 			// 	println!("{}", ac.0);
 			// }

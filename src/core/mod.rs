@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+mod logger;
+pub use logger::Logger;
 pub mod taxon;
 pub mod toxin;
 pub use toxin::ToxinPlugin;
